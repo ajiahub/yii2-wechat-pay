@@ -7,10 +7,10 @@
  */
 namespace chinahub\wechat;
 
-use yii\base\Object;
+use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 
-class WxPayConfig extends Object
+class WxPayConfig extends Behavior
 {
     /**
      * @var app_id

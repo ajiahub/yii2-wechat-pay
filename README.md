@@ -22,10 +22,24 @@ or add
 to the require section of your `composer.json` file.
 
 
+Configure
+-----
+
+To use this extension, you have to configure the Connection class in your application configuration:
+
+```php
+'components' => [
+	'wxPay' => [
+		'class' => 'chinahub\wechat\WxPayConfig',
+		'app_id' => '8888888888888',
+		'mch_id' => '9999999999999999',
+		'app_key' => '11111111111111111',
+		'app_secret' => '777777777777777777',
+	],
+]
+```
+
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
-
-```php
-<?= \chinahub\wechat\AutoloadExample::widget(); ?>```
+please wait...

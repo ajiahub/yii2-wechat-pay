@@ -12,7 +12,7 @@ namespace chinahub\wechat;
  * @author widyhu
  *
  */
-class WxPayNotify extends WxPayNotifyReply
+class WxPayNotify extends WxPayDataBase
 {
     /**
      *

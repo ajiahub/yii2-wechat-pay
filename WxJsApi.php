@@ -17,7 +17,7 @@ namespace chinahub\wechat;
  * @author widy
  *
  */
-class JsApiPay
+class JsApiPay extends WxPayDataBase
 {
     /**
      *
@@ -108,11 +108,11 @@ class JsApiPay
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        if (WxPayConfig::CURL_PROXY_HOST != "0.0.0.0"
-            && WxPayConfig::CURL_PROXY_PORT != 0
+        if ($this->curl_proxy_host != "0.0.0.0"
+            && $this->curl_proxy_port != 0
         ) {
-            curl_setopt($ch, CURLOPT_PROXY, WxPayConfig::CURL_PROXY_HOST);
-            curl_setopt($ch, CURLOPT_PROXYPORT, WxPayConfig::CURL_PROXY_PORT);
+            curl_setopt($ch, CURLOPT_PROXY, $this->curl_proxy_host);
+            curl_setopt($ch, CURLOPT_PROXYPORT, $this->curl_proxy_port);
         }
         //运行curl，结果以jason形式返回
         $res = curl_exec($ch);
@@ -126,26 +126,6 @@ class JsApiPay
 
     /**
      *
-     * 拼接签名字符串
-     * @param array $urlObj
-     *
-     * @return 返回已经拼接好的字符串
-     */
-    private function ToUrlParams($urlObj)
-    {
-        $buff = "";
-        foreach ($urlObj as $k => $v) {
-            if ($k != "sign") {
-                $buff .= $k . "=" . $v . "&";
-            }
-        }
-
-        $buff = trim($buff, "&");
-        return $buff;
-    }
-
-    /**
-     *
      * 获取地址js参数
      *
      * @return 获取共享收货地址js函数需要的参数，json格式可以直接做参数使用
@@ -154,7 +134,7 @@ class JsApiPay
     {
         $getData = $this->data;
         $data = array();
-        $data["appid"] = WxPayConfig::APPID;
+        $data["appid"] = $this->app_id;
         $data["url"] = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $time = time();
         $data["timestamp"] = "$time";
@@ -168,7 +148,7 @@ class JsApiPay
             "addrSign" => $addrSign,
             "signType" => "sha1",
             "scope" => "jsapi_address",
-            "appId" => WxPayConfig::APPID,
+            "appId" => $this->app_id,
             "timeStamp" => $data["timestamp"],
             "nonceStr" => $data["noncestr"]
         );
@@ -185,7 +165,7 @@ class JsApiPay
      */
     private function __CreateOauthUrlForCode($redirectUrl)
     {
-        $urlObj["appid"] = WxPayConfig::APPID;
+        $urlObj["appid"] = $this->app_id;
         $urlObj["redirect_uri"] = "$redirectUrl";
         $urlObj["response_type"] = "code";
         $urlObj["scope"] = "snsapi_base";
@@ -203,8 +183,8 @@ class JsApiPay
      */
     private function __CreateOauthUrlForOpenid($code)
     {
-        $urlObj["appid"] = WxPayConfig::APPID;
-        $urlObj["secret"] = WxPayConfig::APPSECRET;
+        $urlObj["appid"] = $this->app_id;
+        $urlObj["secret"] = $this->app_secret;
         $urlObj["code"] = $code;
         $urlObj["grant_type"] = "authorization_code";
         $bizString = $this->ToUrlParams($urlObj);
